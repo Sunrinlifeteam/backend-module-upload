@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
+import { SHA1 } from '../shared/functions/hash';
+import { FileRequest } from 'src/shared/transfer/upload.dto';
 import { v4 as uuidV4 } from 'uuid';
 
 @Injectable()
@@ -16,11 +18,9 @@ export class UploadService {
     this.awsS3Bucket = this.configService.get<string>('AWS_S3_BUCKET');
   }
 
-  public async uploadFile({
-    buffer,
-    mimetype,
-  }: Express.Multer.File): Promise<string> {
-    const filename = `${uuidV4()}.${mimetype.split('/')[1]}`;
+  public async uploadFile({ buffer, mimetype }: FileRequest): Promise<string> {
+    const hash = SHA1(buffer);
+    const filename = `${hash}.${mimetype.split('/')[1]}`;
     const response = await this.s3Storage
       .upload({
         Bucket: this.awsS3Bucket,

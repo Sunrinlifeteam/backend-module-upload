@@ -1,11 +1,7 @@
-import {
-  Controller,
-  UnsupportedMediaTypeException,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, UnsupportedMediaTypeException } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { allowedTypes } from '../shared/constants/file';
+import { FileRequest, FileResponse } from 'src/shared/transfer/upload.dto';
 import { UploadService } from './upload.service';
 
 @Controller('upload')
@@ -13,15 +9,12 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @GrpcMethod('UploadService', 'uploadImage')
-  @UseInterceptors(FileInterceptor('image'))
-  public async uploadImage(
-    @UploadedFile() imageFile: Express.Multer.File,
-  ): Promise<string> {
-    if (
-      !['image/jpeg', 'image/png', 'image/gif'].includes(imageFile.mimetype)
-    ) {
-      throw new UnsupportedMediaTypeException();
+  public async uploadImage(message: FileRequest): Promise<FileResponse> {
+    if (allowedTypes.includes(message.mimetype)) {
+      return {
+        url: await this.uploadService.uploadFile(message),
+      };
     }
-    return await this.uploadService.uploadFile(imageFile);
+    throw new UnsupportedMediaTypeException();
   }
 }
