@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import { SHA1 } from '../shared/functions/hash';
 import { FileRequest } from 'src/shared/transfer/upload.dto';
-import { v4 as uuidV4 } from 'uuid';
 
 @Injectable()
 export class UploadService {
