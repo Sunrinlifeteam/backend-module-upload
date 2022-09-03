@@ -5,7 +5,7 @@ import {
   grpcClientOptions,
   serviceHost,
   servicePort,
-} from './shared/options/upload.grpc';
+} from 'shared/lib/options/upload.grpc';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
-import { SHA1 } from '../shared/functions/hash';
-import { FileRequest } from 'src/shared/transfer/upload.dto';
+import { SHA1 } from 'shared/lib/functions/hash';
+import { FileRequest } from 'shared/lib/transfer/upload.dto';
 
 @Injectable()
 export class UploadService {
